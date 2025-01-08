@@ -71,15 +71,63 @@ bool GameScene::init()
     auto edgeNode = Node::create();
     edgeNode->setPosition(Point(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
     edgeNode->setPhysicsBody(edgeBody);
-
-
-
     this->addChild(edgeNode);
 
+    //Spawn player
+    player = new Player(this);
+
+    // Create a keyboard event listener
+    auto keyboardListener = EventListenerKeyboard::create();
+
+    // Assign callback functions for key press and release
+    keyboardListener->onKeyPressed = CC_CALLBACK_2(GameScene::OnKeyPressed, this);
+    keyboardListener->onKeyReleased = CC_CALLBACK_2(GameScene::OnKeyReleased, this);
+
+    // Add the listener to the event dispatcher
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+
+    this->scheduleUpdate();
     return true;
 }
 
 void GameScene::SetPhysicsWorld(cocos2d::PhysicsWorld* world)
 {
     sceneWorld = world;
+}
+
+void GameScene::OnKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
+{
+    // CCLOG("Key pressed: %d", static_cast<int>(keyCode));
+
+    if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW || keyCode == EventKeyboard::KeyCode::KEY_Q)
+    {
+        if (player)
+        {
+            player->isMoving = true;
+            player->facingLeft = true;
+        }
+    }
+    else if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW || keyCode == EventKeyboard::KeyCode::KEY_D)
+    {
+        if (player)
+        {
+            player->isMoving = true;
+            player->facingLeft = false;
+        }
+    }
+}
+
+void GameScene::OnKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
+{
+    if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW || keyCode == EventKeyboard::KeyCode::KEY_A || keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW || keyCode == EventKeyboard::KeyCode::KEY_D)
+    {
+        if (player)
+            player->isMoving = false;
+    }
+}
+
+void GameScene::update(float dt)
+{
+    if (player)
+        player->Update(dt);
 }

@@ -2,6 +2,7 @@
 #define __GAME_SCENE_H__
 
 #include "cocos2d.h"
+#include "Player.h"
 
 class GameScene : public cocos2d::Layer
 {
@@ -17,7 +18,15 @@ public:
 
 private:
     void SetPhysicsWorld(cocos2d::PhysicsWorld* world);
-    cocos2d::PhysicsWorld *sceneWorld;
+    cocos2d::PhysicsWorld* sceneWorld;
+
+    // Callback methods for keyboard events
+    void OnKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+    void OnKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+
+    void update(float dt);
+
+    Player* player;
 };
 
 #endif // __GAME_SCENE_H__
