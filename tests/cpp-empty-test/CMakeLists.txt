@@ -53,13 +53,12 @@ if(APPLE OR VS)
 endif()
 
 list(APPEND GAME_HEADER
-     Classes/AppMacros.h
-     Classes/HelloWorldScene.h
+     Classes/GameScene.h
      Classes/AppDelegate.h
      )
 list(APPEND GAME_SOURCE
      Classes/AppDelegate.cpp
-     Classes/HelloWorldScene.cpp
+     Classes/GameScene.cpp
      )
 
 if(ANDROID)

@@ -1,5 +1,5 @@
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
+#include "GameScene.h"
 
 // is the game landscape or portrait (true for landscape and false for portrait)
 #define IS_LANDSCAPE false
@@ -36,7 +36,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     fileUtils->setSearchPaths(resDirOrders);
 
     // create a scene. it's an autorelease object
-    auto scene = HelloWorld::createScene();
+    auto scene = GameScene::createScene();
 
     // run
     director->runWithScene(scene);
