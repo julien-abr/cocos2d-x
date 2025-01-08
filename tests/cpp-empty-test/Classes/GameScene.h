@@ -3,6 +3,9 @@
 
 #include "cocos2d.h"
 #include "Player.h"
+#include "Projectile.h"
+#include <vector>
+#include <set>
 
 class GameScene : public cocos2d::Layer
 {
@@ -26,7 +29,11 @@ private:
 
     void update(float dt);
 
+    void SpawnProjectile();
+
     Player* player;
+    std::vector<Projectile*> projectiles;
+    std::set<cocos2d::EventKeyboard::KeyCode> activeKeys;
 };
 
 #endif // __GAME_SCENE_H__

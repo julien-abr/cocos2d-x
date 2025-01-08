@@ -7,6 +7,7 @@ Scene* GameScene::createScene()
     // 'scene' is an autorelease object
     auto scene = Scene::createWithPhysics();
     scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    scene->getPhysicsWorld()->setGravity(Vect(0, 0));
 
     // 'layer' is an autorelease object
     auto layer = GameScene::create();
@@ -99,30 +100,55 @@ void GameScene::OnKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::E
 {
     // CCLOG("Key pressed: %d", static_cast<int>(keyCode));
 
-    if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW || keyCode == EventKeyboard::KeyCode::KEY_Q)
+    // Add the key to the active keys set
+    activeKeys.insert(keyCode);
+
+    if (player)
     {
-        if (player)
+        // Check movement keys
+        if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW || keyCode == EventKeyboard::KeyCode::KEY_A)
         {
             player->isMoving = true;
             player->facingLeft = true;
         }
-    }
-    else if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW || keyCode == EventKeyboard::KeyCode::KEY_D)
-    {
-        if (player)
+        else if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW || keyCode == EventKeyboard::KeyCode::KEY_D)
         {
             player->isMoving = true;
             player->facingLeft = false;
+        }
+
+        // Jump
+        if (keyCode == EventKeyboard::KeyCode::KEY_SPACE && !player->isJumping || keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW && !player->isJumping)
+        {
+            player->Jump();
         }
     }
 }
 
 void GameScene::OnKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
 {
-    if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW || keyCode == EventKeyboard::KeyCode::KEY_A || keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW || keyCode == EventKeyboard::KeyCode::KEY_D)
+    // Remove the key from the active keys set
+    activeKeys.erase(keyCode);
+
+    if (player)
     {
-        if (player)
-            player->isMoving = false;
+        // Check if any movement keys are still active
+        if (activeKeys.find(EventKeyboard::KeyCode::KEY_LEFT_ARROW) != activeKeys.end() ||
+            activeKeys.find(EventKeyboard::KeyCode::KEY_A) != activeKeys.end())
+        {
+            player->isMoving = true;
+            player->facingLeft = true;
+        }
+        else if (activeKeys.find(EventKeyboard::KeyCode::KEY_RIGHT_ARROW) != activeKeys.end() ||
+            activeKeys.find(EventKeyboard::KeyCode::KEY_D) != activeKeys.end())
+        {
+            player->isMoving = true;
+            player->facingLeft = false;
+        }
+        else
+        {
+            player->isMoving = false; // Stop moving if no movement keys are pressed
+        }
     }
 }
 
@@ -130,4 +156,16 @@ void GameScene::update(float dt)
 {
     if (player)
         player->Update(dt);
+
+    for (auto projectile : projectiles)
+    {
+        projectile->Update(dt);
+    }
+}
+
+void GameScene::SpawnProjectile()
+{
+    Vec2 startPosition = player->GetPosition();
+    auto projectile = new Projectile(this, startPosition);
+    projectiles.push_back(projectile); 
 }

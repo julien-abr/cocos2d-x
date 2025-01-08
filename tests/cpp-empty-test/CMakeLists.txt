@@ -57,11 +57,13 @@ list(APPEND GAME_HEADER
      Classes/AppDelegate.h
      Classes/Player.h
      Classes/Definitions.h
+     Classes/Projectile.h
      )
 list(APPEND GAME_SOURCE
      Classes/AppDelegate.cpp
      Classes/GameScene.cpp
      Classes/Player.cpp
+     Classes/Projectile.cpp
      )
 
 if(ANDROID)
